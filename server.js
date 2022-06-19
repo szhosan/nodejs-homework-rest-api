@@ -1,20 +1,16 @@
 const app = require("./app");
-const MongoClient = require("mongodb").MongoClient;
+const mongoose = require("mongoose");
 const { MONGO_URL, PORT = 3001 } = process.env;
 
-const start = async () => {
-  const client = await MongoClient.connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+mongoose
+  .connect(MONGO_URL)
+  .then(() => {
+    console.log("Database connection successful");
+    app.listen(PORT, () => {
+      console.log("Server running. Use our API on port: " + PORT);
+    });
+  })
+  .catch((error) => {
+    console.log(error.message);
+    process.exit(1);
   });
-
-  const db = client.db();
-  const Contacts = db.collection("contacts");
-  const contacts = await Contacts.find({}).toArray();
-  console.log(contacts);
-  app.listen(PORT, () => {
-    console.log("Server running. Use our API on port: " + PORT);
-  });
-};
-
-start();

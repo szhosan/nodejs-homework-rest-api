@@ -3,6 +3,7 @@ const router = express.Router();
 const contactOperations = require("../../models/contacts");
 const Joi = require("joi");
 const CreateError = require("http-errors");
+const { Contact } = require("../../models/contactModel");
 
 const contactSchema = Joi.object({
   name: Joi.string()
@@ -22,7 +23,7 @@ const asyncWrapper = (controller) => {
 router.get(
   "/",
   asyncWrapper(async (req, res, next) => {
-    res.status(200).json(await contactOperations.listContacts());
+    res.status(200).json(await Contact.find({}));
   })
 );
 
@@ -30,7 +31,7 @@ router.get(
   "/:contactId",
   asyncWrapper(async (req, res, next) => {
     const { contactId } = req.params;
-    const contact = await contactOperations.getContactById(contactId);
+    const contact = await Contact.findById(contactId);
     if (contact) {
       res.status(200).json(contact);
     } else {
@@ -42,11 +43,9 @@ router.get(
 router.post(
   "/",
   asyncWrapper(async (req, res, next) => {
-    const { error } = contactSchema.validate(req.body);
-    if (error) {
-      throw new CreateError(400, { message: "missing required name field" });
-    }
-    res.status(201).json(await contactOperations.addContact(req.body));
+    const { name, email, number } = req.body;
+    const contact = new Contact({ name, email, number });
+    res.status(200).json(await contact.save());
   })
 );
 
