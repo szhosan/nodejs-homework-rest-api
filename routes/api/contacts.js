@@ -22,41 +22,19 @@ const {
     .required(),
 }); */
 
-const asyncWrapper = (controller) => {
-  return (res, req, next) => controller(res, req).catch(next);
-};
+router.get("/", getContacts);
 
-router.get("/", asyncWrapper(getContacts));
+router.get("/:contactId", getContact);
 
-router.get(
-  "/:contactId",
-  asyncWrapper(getContact)
-  /* async (req, res, next) => {
-    const { contactId } = req.params;
-    const contact = await Contact.findById(contactId);
-    if (contact) {
-      res.status(200).json(contact);
-    } else {
-      throw new CreateError(404, { message: "Not found" });
-    }
-  } */
-);
-
-router.post(
-  "/",
-  asyncWrapper(
-    addContact /* async (req, res, next) => {
+router.post("/", addContact);
+/* async (req, res, next) => {
     const { name, email, number } = req.body;
     const contact = new Contact({ name, email, number });
     res.status(200).json(await contact.save());
   } */
-  )
-);
 
-router.delete(
-  "/:contactId",
-  asyncWrapper(
-    deleteContact /* async (req, res, next) => {
+router.delete("/:contactId", deleteContact);
+/* async (req, res, next) => {
     const { contactId } = req.params;
     if (await contactOperations.removeContact(contactId)) {
       res.status(200).json({ message: "contact deleted" });
@@ -64,13 +42,9 @@ router.delete(
       throw new CreateError(404, { message: "Not found" });
     }
   } */
-  )
-);
 
-router.put(
-  "/:contactId",
-  asyncWrapper(
-    changeContact /* async (req, res, next) => {
+router.put("/:contactId", changeContact);
+/* async (req, res, next) => {
     const { contactId } = req.params;
     const { error } = contactSchema.validate(req.body);
     if (error) {
@@ -86,7 +60,5 @@ router.put(
       throw new CreateError(400, { message: "Not found" });
     }
   } */
-  )
-);
 
 module.exports = router;

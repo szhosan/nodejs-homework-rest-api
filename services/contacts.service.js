@@ -8,8 +8,8 @@ const getContactById = async (id) => {
   return await Contact.findById(id);
 };
 
-const addContact = async ({ name, email, number }) => {
-  const contact = new Contact({ name, email, number });
+const addContact = async ({ name, email, phone, favorite }) => {
+  const contact = new Contact({ name, email, phone, favorite });
   return await contact.save();
 };
 
