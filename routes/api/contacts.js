@@ -1,11 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const contactOperations = require("../../models/contacts");
-const Joi = require("joi");
-const CreateError = require("http-errors");
-const { Contact } = require("../../models/contactModel");
 
-const contactSchema = Joi.object({
+/* const Joi = require("joi");
+const CreateError = require("http-errors"); */
+const {
+  getContacts,
+  getContact,
+  addContact,
+  changeContact,
+  deleteContact,
+} = require("../../controllers/contacts");
+
+/* const contactSchema = Joi.object({
   name: Joi.string()
     .min(3)
     .pattern(/^[a-zA-Z ]+$/)
@@ -14,22 +20,18 @@ const contactSchema = Joi.object({
   phone: Joi.string()
     .pattern(/^[0-9]+-[0-9]+-[0-9]+$/, "numbers")
     .required(),
-});
+}); */
 
 const asyncWrapper = (controller) => {
   return (res, req, next) => controller(res, req).catch(next);
 };
 
-router.get(
-  "/",
-  asyncWrapper(async (req, res, next) => {
-    res.status(200).json(await Contact.find({}));
-  })
-);
+router.get("/", asyncWrapper(getContacts));
 
 router.get(
   "/:contactId",
-  asyncWrapper(async (req, res, next) => {
+  asyncWrapper(getContact)
+  /* async (req, res, next) => {
     const { contactId } = req.params;
     const contact = await Contact.findById(contactId);
     if (contact) {
@@ -37,33 +39,38 @@ router.get(
     } else {
       throw new CreateError(404, { message: "Not found" });
     }
-  })
+  } */
 );
 
 router.post(
   "/",
-  asyncWrapper(async (req, res, next) => {
+  asyncWrapper(
+    addContact /* async (req, res, next) => {
     const { name, email, number } = req.body;
     const contact = new Contact({ name, email, number });
     res.status(200).json(await contact.save());
-  })
+  } */
+  )
 );
 
 router.delete(
   "/:contactId",
-  asyncWrapper(async (req, res, next) => {
+  asyncWrapper(
+    deleteContact /* async (req, res, next) => {
     const { contactId } = req.params;
     if (await contactOperations.removeContact(contactId)) {
       res.status(200).json({ message: "contact deleted" });
     } else {
       throw new CreateError(404, { message: "Not found" });
     }
-  })
+  } */
+  )
 );
 
 router.put(
   "/:contactId",
-  asyncWrapper(async (req, res, next) => {
+  asyncWrapper(
+    changeContact /* async (req, res, next) => {
     const { contactId } = req.params;
     const { error } = contactSchema.validate(req.body);
     if (error) {
@@ -78,7 +85,8 @@ router.put(
     } else {
       throw new CreateError(400, { message: "Not found" });
     }
-  })
+  } */
+  )
 );
 
 module.exports = router;
