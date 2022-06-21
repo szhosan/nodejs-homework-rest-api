@@ -13,12 +13,18 @@ const addContact = async ({ name, email, phone, favorite }) => {
   return await contact.save();
 };
 
-const changeContactById = async (id, { name, email, number }) => {
-  return await Contact.findByIdAndUpdate(id, { $set: { name, email, number } });
+const changeContactById = async (id, { name, email, phone, favorite }) => {
+  return await Contact.findByIdAndUpdate(id, {
+    $set: { name, email, phone, favorite },
+  });
 };
 
 const deleteContactById = async (id) => {
   return await Contact.findByIdAndRemove(id);
+};
+
+const updateStatusContactById = async (id, { favorite }) => {
+  return await Contact.findByIdAndUpdate(id, { $set: { favorite } });
 };
 
 module.exports = {
@@ -27,4 +33,5 @@ module.exports = {
   addContact,
   changeContactById,
   deleteContactById,
+  updateStatusContactById,
 };

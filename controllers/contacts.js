@@ -48,7 +48,23 @@ const addContact = async (req, res, next) => {
   }
 };
 
-const changeContact = async (req, res, next) => {};
+const changeContact = async (req, res, next) => {
+  try {
+    const { error } = joiAddContactSchema.validate(req.body);
+    if (error) {
+      throw new Error(400, error.message);
+    }
+    const { contactId } = req.params;
+    const contact = await contacts.changeContactById(contactId, req.body);
+    console.log(contact);
+    if (!contact) {
+      throw new Error(404, "Not found");
+    }
+    res.json(contact);
+  } catch (e) {
+    next(e);
+  }
+};
 
 const deleteContact = async (req, res, next) => {
   try {
@@ -63,10 +79,31 @@ const deleteContact = async (req, res, next) => {
   }
 };
 
+const updateStatusContact = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+    const { error } = joiUpdateContactFavoriteSchema.validate(req.body);
+    if (error) {
+      throw new Error(400, "missing field favorite");
+    }
+    const updatedContact = await contacts.updateStatusContactById(
+      contactId,
+      req.body
+    );
+    if (!updatedContact) {
+      throw new Error(404, "Not found");
+    }
+    res.json(updatedContact);
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getContacts,
   getContact,
   addContact,
   changeContact,
   deleteContact,
+  updateStatusContact,
 };

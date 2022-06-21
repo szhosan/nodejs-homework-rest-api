@@ -9,6 +9,7 @@ const {
   addContact,
   changeContact,
   deleteContact,
+  updateStatusContact,
 } = require("../../controllers/contacts");
 
 /* const contactSchema = Joi.object({
@@ -60,5 +61,7 @@ router.put("/:contactId", changeContact);
       throw new CreateError(400, { message: "Not found" });
     }
   } */
+
+router.patch("/:contactId/favorite", updateStatusContact);
 
 module.exports = router;
