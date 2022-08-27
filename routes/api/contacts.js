@@ -1,67 +1,39 @@
 const express = require("express");
+
 const router = express.Router();
 
-/* const Joi = require("joi");
-const CreateError = require("http-errors"); */
-const {
-  getContacts,
-  getContact,
-  addContact,
-  changeContact,
-  deleteContact,
-  updateStatusContact,
-} = require("../../controllers/contacts");
+const ctrl = require("../../controllers/contacts");
 
-/* const contactSchema = Joi.object({
-  name: Joi.string()
-    .min(3)
-    .pattern(/^[a-zA-Z ]+$/)
-    .required(),
-  email: Joi.string().email().required(),
-  phone: Joi.string()
-    .pattern(/^[0-9]+-[0-9]+-[0-9]+$/, "numbers")
-    .required(),
-}); */
+const { ctrlWrapper } = require("../../helpers");
 
-router.get("/", getContacts);
+const { validationBody, isValidId } = require("../../middlewares");
 
-router.get("/:contactId", getContact);
+const { schemas } = require("../../models/contactModel");
 
-router.post("/", addContact);
-/* async (req, res, next) => {
-    const { name, email, number } = req.body;
-    const contact = new Contact({ name, email, number });
-    res.status(200).json(await contact.save());
-  } */
+router.get("/", ctrlWrapper(ctrl.getAll));
 
-router.delete("/:contactId", deleteContact);
-/* async (req, res, next) => {
-    const { contactId } = req.params;
-    if (await contactOperations.removeContact(contactId)) {
-      res.status(200).json({ message: "contact deleted" });
-    } else {
-      throw new CreateError(404, { message: "Not found" });
-    }
-  } */
+router.get("/:id", isValidId, ctrlWrapper(ctrl.getById));
 
-router.put("/:contactId", changeContact);
-/* async (req, res, next) => {
-    const { contactId } = req.params;
-    const { error } = contactSchema.validate(req.body);
-    if (error) {
-      throw new CreateError(400, { message: "missing fields" });
-    }
-    const updatedContact = await contactOperations.updateContact(
-      contactId,
-      req.body
-    );
-    if (updatedContact) {
-      res.status(200).json(updatedContact);
-    } else {
-      throw new CreateError(400, { message: "Not found" });
-    }
-  } */
+router.post(
+  "/",
+  validationBody(schemas.joiAddContactSchema),
+  ctrlWrapper(ctrl.add)
+);
 
-router.patch("/:contactId/favorite", updateStatusContact);
+router.delete("/:id", isValidId, ctrlWrapper(ctrl.removeById));
+
+router.put(
+  "/:id",
+  isValidId,
+  validationBody(schemas.joiAddContactSchema),
+  ctrlWrapper(ctrl.updateById)
+);
+
+router.patch(
+  "/:id/favorite",
+  isValidId,
+  validationBody(schemas.joiUpdateContactFavoriteSchema),
+  ctrlWrapper(ctrl.updateFavorite)
+);
 
 module.exports = router;
