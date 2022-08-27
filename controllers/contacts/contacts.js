@@ -1,9 +1,9 @@
-const { contacts } = require("../services");
-const createError = require("../helpers/error");
+const { contacts } = require("../../services");
+const createError = require("../../helpers/error");
 const {
   joiAddContactSchema,
   joiUpdateContactFavoriteSchema,
-} = require("../models/contactModel");
+} = require("../../models/contactModel");
 
 const getContacts = async (req, res, next) => {
   res.json(await contacts.getContacts());
