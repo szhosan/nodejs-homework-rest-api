@@ -11,7 +11,7 @@ const { schemas } = require("../../models/userModel");
 const router = express.Router();
 
 router.post(
-  "/register",
+  "/signup",
   validationBody(schemas.registerSchema),
   ctrlWrapper(ctrl.register)
 );
