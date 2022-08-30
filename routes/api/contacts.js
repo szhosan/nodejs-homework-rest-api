@@ -25,7 +25,7 @@ router.post(
   ctrlWrapper(ctrl.add)
 );
 
-router.delete("/:id", isValidId, ctrlWrapper(ctrl.removeById));
+router.delete("/:id", authenticate, isValidId, ctrlWrapper(ctrl.removeById));
 
 router.put(
   "/:id",
