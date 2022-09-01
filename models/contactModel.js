@@ -1,27 +1,35 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
+const { handleSchemaValidationErrors } = require("../helpers");
+
 const contactSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "User name required"],
-    unique: true,
+    /* unique: true, */
   },
   email: {
     type: String,
     required: [true, "User email required"],
-    unique: true,
+    /* unique: true, */
   },
   phone: {
     type: String,
     required: [true, "User phone number required"],
-    unique: true,
+    /* unique: true, */
   },
   favorite: {
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "user",
+  },
 });
+
+contactSchema.post("save", handleSchemaValidationErrors);
 
 const codeRegexp = /^\(\d{3}\)\s\d{3}-\d{4}$/;
 
