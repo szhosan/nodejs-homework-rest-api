@@ -4,6 +4,8 @@ const { createError } = require("../../helpers");
 
 const { User } = require("../../models/userModel");
 
+const gravatar = require("gravatar");
+
 const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -11,7 +13,14 @@ const register = async (req, res) => {
     throw createError(409, `User with such email:"${email}" already exists`);
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  const result = await User.create({ email, password: hashedPassword });
+
+  const avatarURL = gravatar.url(email);
+
+  const result = await User.create({
+    email,
+    password: hashedPassword,
+    avatarURL,
+  });
   res.status(201).json({ email: result.email });
 };
 
